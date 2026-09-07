@@ -113,13 +113,30 @@ leverage, operational efficiency and R&D investment.
    high Return on Assets (ROA of 8.9%) with a strong net profit margin of 33.45%
    relative to the peer group.
 
-5. **Growth and profitability do not always move together.** Companies such
+4. **Growth and profitability do not always move together.** Companies such
    as Tesla displayed notable growth characteristics while showing comparatively
    weaker performance in selected profitability or efficiency measures.
 
-6. **R&D investment varied substantially across the peer group**, with Meta,
+5. **R&D investment varied substantially across the peer group**, with Meta,
    Nvidia and Salesforce demonstrating significant investment in research and
    development relative to their revenue base.
+
+---
+# Profitability Scoring Framework
+
+A 0–100 historical Profitability Score was developed to provide a consistent
+peer-relative comparison across the nine companies.
+
+| Metric | Weight |
+|---|---:|
+| Net Profit Margin | 40% |
+| Gross Profit Margin | 30% |
+| Operating Profit Margin | 30% |
+
+The profitability score is calculated as:
+
+    Profitability Score = 40% × Net Profit Margin + 30% × Gross Profit Margin + 30% × Operating Profit Margin
+
 
 ---
 
@@ -151,13 +168,7 @@ Debt Ratio is scored in the opposite direction because a lower debt ratio is pre
 
 The final Investment Score is calculated as:
 
-    Investment Score =
-        25% × ROA Score
-      + 25% × Revenue Growth Score
-      + 20% × Net Margin Score
-      + 15% × Operating Margin Score
-      + 10% × Market Cap Growth Score
-      +  5% × Debt Score
+    Investment Score = 25% × ROA Score + 25% × Revenue Growth Score + 20% × Net Margin Score + 15% × Operating Margin Score + 10% × Market Cap Growth Score + 5% × Debt Score
 
 ### Investment Ratings
 
@@ -228,41 +239,19 @@ The consolidated view includes:
 ### Key SQL Techniques Applied
 
 - Common Table Expressions (CTEs)
-- Window functions (`LAG()` for quarter-over-quarter (QoQ) growth calculations & `PARTITION BY` for company-level time-series comparisons.
+- Window functions (`LAG()` for quarter-over-quarter (QoQ) growth calculations and `PARTITION BY` for company-level time-series comparisons)
 - SQL Views
 - Data type conversion
-- Financial ratio calculations (e.g. Round((g_profit/t_revenue),4) as gross_margin_pct)
+- Financial ratio calculations, including gross margin, operating margin, net margin, debt ratio, ROA and asset turnover
 - Time-series analysis
 - Data consolidation
 
-
----
-
-# Scoring Methodology & Key DAX Measures:
-
-```DAX
-Avg_ROA = AVERAGE('public financial_performance'[roa_pct])
-
-Profitability Score = (0.4 * [Avg_Net_Profit_Margin] + 0.3 * [Avg_GP_margin] + 0.3 * [Avg_OP_Profit_Margin])
-
-Score Normalisation: 
-            Net Margin Score =
-            VAR CurrentValue = [Avg_Net_Profit_Margin]
-            VAR MinValue =
-                MINX(ALLSELECTED('public financial_performance'[company]),[Avg_Net_Profit_Margin])
-            VAR MaxValue =
-                MAXX(ALLSELECTED('public financial_performance'[company]),
-                    [Avg_Net_Profit_Margin])
-            RETURN
-                DIVIDE(CurrentValue - MinValue, MaxValue - MinValue,0) * 100
-
-
-Investment Score = 0.25 * [ROA Score] + 0.25 * [Revenue Growth Score] + 0.20 * [Net Margin Score] + 0.15 * [Operating Margin Score] + 0.10 * [Market Cap Growth Score] + 0.05 * [Debt Score]
-
-
-Investment Rating =
-            VAR Score = [Investment Score]
-            RETURN SWITCH(TRUE(), Score >= 80, "STRONG BUY", Score >= 60, "BUY", Score >= 40, "HOLD", Score >= 0, "WATCH", "N/A")
+# Files included
+- Dashboard Screenshots (`.png`)
+- Power BI Dashboard (`.pbix`)
+- SQL scripts (`.sql`)
+- Datasets (`.csv`)
+- README Documentation
 
 
 
